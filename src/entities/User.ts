@@ -17,16 +17,16 @@ export class User {
   @Column("character varying", { name: "phone", nullable: true })
   phone: string | null;
 
-  @Column("character varying", { name: "email", nullable: true})
+  @Column("character varying", { name: "email", nullable: false})
   email: string | null;
 
-  @Column("character varying", { name: "password", nullable: true })
+  @Column("character varying", { name: "password", nullable: false })
   password: string | null;
 
   @Column("character varying", { name: "avatar", nullable: true })
   avatar: string | null;
 
-  @Column("boolean", { name: "is_active", nullable: true })
+  @Column("boolean", { name: "is_active", nullable: true, default: false})
   isActive: boolean | null;
 
   @Column("timestamp without time zone", { name: "created_at", nullable: true })
