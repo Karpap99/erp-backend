@@ -1,41 +1,49 @@
-import { Column, Entity, Index, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { CompanyUsers } from "./CompanyUsers";
-import { StoreUsers } from "./StoreUsers";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  Index,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { CompanyUsers } from './CompanyUsers';
+import { StoreUsers } from './StoreUsers';
 
-@Index("User_email_key", ["email"], { unique: true })
-@Entity("User", { schema: "public" })
+@Index('User_email_key', ['email'], { unique: true })
+@Entity('User', { schema: 'public' })
 export class User {
-  @PrimaryGeneratedColumn("uuid", { name: "id" })
+  @PrimaryGeneratedColumn('uuid', { name: 'id' })
   id: string;
 
-  @Column("character varying", { name: "name", nullable: true })
-  name: string | null;
+  @Column('varchar', { name: 'name' })
+  name: string;
 
-  @Column("character varying", { name: "surname", nullable: true })
-  surname: string | null;
+  @Column('varchar', { name: 'surname' })
+  surname: string;
 
-  @Column("character varying", { name: "phone", nullable: true })
+  @Column('varchar', { name: 'phone', nullable: true })
   phone: string | null;
 
-  @Column("character varying", { name: "email", nullable: false})
+  @Column('varchar', { name: 'email', nullable: false })
   email: string | null;
 
-  @Column("character varying", { name: "password", nullable: false })
+  @Column('varchar', { name: 'password', nullable: false })
   password: string | null;
 
-  @Column("character varying", { name: "avatar", nullable: true })
+  @Column('varchar', { name: 'avatar', nullable: true })
   avatar: string | null;
 
-  @Column("boolean", { name: "is_active", nullable: true, default: false})
+  @Column('boolean', { name: 'is_active', default: false })
   isActive: boolean | null;
 
-  @Column("timestamp without time zone", { name: "created_at", nullable: true })
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date | null;
 
-  @Column("timestamp without time zone", { name: "updated_at", nullable: true })
-  updatedAt: Date | null;
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: Date;
 
-  @Column("timestamp without time zone", { name: "deleted_at", nullable: true })
+  @Column('timestamp without time zone', { name: 'deleted_at', nullable: true })
   deletedAt: Date | null;
 
   @OneToMany(() => CompanyUsers, (companyUsers) => companyUsers.user)

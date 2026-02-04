@@ -1,21 +1,21 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { StoreRolePermissions } from "./StoreRolePermissions";
-import { StoreUsers } from "./StoreUsers";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { StoreRolePermissions } from './StoreRolePermissions';
+import { StoreUsers } from './StoreUsers';
 
-@Entity("StoreRoles", { schema: "public" })
+@Entity('StoreRoles', { schema: 'public' })
 export class StoreRoles {
-  @PrimaryGeneratedColumn("increment", { name: "id" })
+  @PrimaryGeneratedColumn('increment', { name: 'id' })
   id: number;
 
-  @Column("character varying", { name: "name", nullable: true })
-  name: string | null;
+  @Column('varchar', { name: 'name' })
+  name: string;
 
-  @Column("character varying", { name: "description", nullable: true })
-  description: string | null;
+  @Column('varchar', { name: 'description' })
+  description: string;
 
   @OneToMany(
     () => StoreRolePermissions,
-    (storeRolePermissions) => storeRolePermissions.role
+    (storeRolePermissions) => storeRolePermissions.role,
   )
   storeRolePermissions: StoreRolePermissions[];
 
