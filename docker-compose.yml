@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  app:
+  nest:
     build:
       context: .
       dockerfile: Dockerfile
@@ -32,9 +32,6 @@ services:
     networks:
       - erp-network
     restart: unless-stopped
-    volumes:
-      - ./src:/app/src
-
   # PostgreSQL Database
   postgres:
     image: postgres:16-alpine
