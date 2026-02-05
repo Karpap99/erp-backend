@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { configService } from './config/typeorm.config';
+import { redisStore } from 'cache-manager-redis';
 import { CompanyModule } from './company/company.module';
 import { CompanyPermissionsModule } from './company-permissions/company-permissions.module';
 import { CompanyRolePermissionsModule } from './company-role-permissions/company-role-permissions.module';
@@ -23,6 +25,7 @@ import { StoreRolesModule } from './store-roles/store-roles.module';
 import { StoreUsersModule } from './store-users/store-users.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -47,6 +50,17 @@ import { AuthModule } from './auth/auth.module';
     StoreUsersModule,
     UserModule,
     AuthModule,
+    CacheModule.registerAsync({
+      isGlobal: true,
+      useFactory: async () => ({
+        store: await redisStore({
+          host: process.env.REDIS_HOST || 'localhost',
+          port: parseInt(process.env.REDIS_PORT) || 6379,
+          ttl: 60 * 60 * 24, // 24 hours
+        }),
+      }),
+      inject: [ConfigService],
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
