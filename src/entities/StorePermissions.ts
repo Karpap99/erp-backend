@@ -7,10 +7,10 @@ export class StorePermissions {
   id: number;
 
   @Column('varchar', { name: 'name', nullable: true })
-  name: string | null;
+  name: string;
 
   @Column('varchar', { name: 'description', nullable: true })
-  description: string | null;
+  description: string;
 
   @OneToMany(
     () => StoreRolePermissions,

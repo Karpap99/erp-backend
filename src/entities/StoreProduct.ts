@@ -43,8 +43,8 @@ export class StoreProduct {
   @Column('varchar', { name: 'currency', nullable: true })
   currency: string | null;
 
-  @Column('boolean', { name: 'is_active', nullable: true })
-  isActive: boolean | null;
+  @Column('boolean', { name: 'is_active', default: true })
+  isActive: boolean;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

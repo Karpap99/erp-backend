@@ -3,12 +3,15 @@ import {
   CreateDateColumn,
   Entity,
   Index,
+  JoinColumn,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { CompanyUsers } from './CompanyUsers';
 import { StoreUsers } from './StoreUsers';
+import { Roles } from './Roles';
 
 @Index('User_email_key', ['email'], { unique: true })
 @Entity('User', { schema: 'public' })
@@ -25,17 +28,21 @@ export class User {
   @Column('varchar', { name: 'phone', nullable: true })
   phone: string | null;
 
-  @Column('varchar', { name: 'email', nullable: false })
-  email: string | null;
+  @Column('varchar', { name: 'email' })
+  email: string;
 
-  @Column('varchar', { name: 'password', nullable: false })
-  password: string | null;
+  @Column('varchar', { name: 'password' })
+  password: string;
 
   @Column('varchar', { name: 'avatar', nullable: true })
   avatar: string | null;
 
   @Column('boolean', { name: 'is_active', default: false })
-  isActive: boolean | null;
+  isActive: boolean;
+
+  @JoinColumn()
+  @ManyToOne(() => Roles, (role) => role.users)
+  role: Roles;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date | null;
@@ -49,6 +56,6 @@ export class User {
   @OneToMany(() => CompanyUsers, (companyUsers) => companyUsers.user)
   companyUsers: CompanyUsers[];
 
-  @OneToMany(() => StoreUsers, (storeUsers) => storeUsers.user2)
+  @OneToMany(() => StoreUsers, (storeUsers) => storeUsers.user)
   storeUsers: StoreUsers[];
 }
