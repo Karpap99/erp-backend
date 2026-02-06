@@ -10,11 +10,11 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=development
-      - DATABASE_HOST=postgres
-      - DATABASE_PORT=5432
-      - DATABASE_USER=${DB_USER:-postgres}
-      - DATABASE_PASSWORD=${DB_PASSWORD:-password}
-      - DATABASE_NAME=${DB_NAME:-erp_db}
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-password}
+      - DB_NAME=${DB_NAME:-erp_db}
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - MINIO_ENDPOINT=minio
