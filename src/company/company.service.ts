@@ -1,11 +1,10 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/User';
 import { DataSource, Repository } from 'typeorm';
 import { Company } from 'src/entities/Company';
-import { CompanyUsers } from 'src/entities/CompanyUsers';
 import { CompanyRoles } from 'src/entities/CompanyRoles';
 import { CompanyRoleType } from 'src/enums/company-role-type.enum';
 
@@ -14,10 +13,6 @@ export class CompanyService {
   constructor(
     @InjectRepository(Company)
     private readonly companyRepository: Repository<Company>,
-    @InjectRepository(CompanyUsers)
-    private readonly companyUsersRepository: Repository<CompanyUsers>,
-    @InjectRepository(CompanyRoles)
-    private readonly companyRolesRepository: Repository<CompanyRoles>,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -51,19 +46,68 @@ export class CompanyService {
     });
   }
 
-  findAll() {
-    return `This action returns all company`;
+  async findAllForUser(
+    includeDeleted: boolean = false,
+    user: User,
+  ): Promise<Company[]> {
+    const query = this.companyRepository
+      .createQueryBuilder('company')
+      .innerJoin('company.companyUsers', 'filterCU')
+      .innerJoin('filterCU.user', 'filterUser')
+      .where('filterUser.id = :userId', { userId: user.id })
+      .leftJoinAndSelect('company.companyUsers', 'companyUsers')
+      .leftJoinAndSelect('companyUsers.user', 'users')
+      .leftJoinAndSelect('companyUsers.role', 'role');
+
+    if (!includeDeleted) {
+      query.andWhere('company.deletedAt IS NULL');
+    }
+
+    const companies = await query.getMany();
+
+    companies.forEach((company) => {
+      company.companyUsers.forEach((companyUser) => {
+        companyUser.user.password = '';
+      });
+    });
+
+    return companies;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} company`;
+  async findOne(id: string): Promise<Company> {
+    const company = await this.companyRepository
+      .createQueryBuilder('company')
+      .leftJoinAndSelect('company.companyUsers', 'companyUsers')
+      .leftJoinAndSelect('companyUsers.user', 'user')
+      .leftJoinAndSelect('companyUsers.role', 'role')
+      .leftJoinAndSelect('company.stores', 'stores')
+      .leftJoinAndSelect('company.products', 'products')
+      .where('company.id = :id', { id })
+      .andWhere('company.deletedAt IS NULL')
+      .getOne();
+
+    if (!company) {
+      throw new NotFoundException(`Company with id ${id} not found`);
+    }
+
+    return company;
   }
 
-  update(id: number, updateCompanyDto: UpdateCompanyDto) {
-    return `This action updates a #${id} company`;
+  async update(
+    id: string,
+    updateCompanyDto: UpdateCompanyDto,
+    user: User,
+  ): Promise<Company> {
+    const company = await this.findOne(id);
+
+    Object.assign(company, updateCompanyDto);
+
+    return this.companyRepository.save(company);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} company`;
+  async remove(id: string): Promise<void> {
+    const company = await this.findOne(id);
+    company.deletedAt = new Date();
+    await this.companyRepository.save(company);
   }
 }

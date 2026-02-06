@@ -12,8 +12,13 @@ export class CompanyUsersService {
     private readonly companyUsersRepository: Repository<CompanyUsers>,
   ) {}
 
-  create(createCompanyUserDto: CreateCompanyUserDto) {
-    return 'this.companyUsersRepository.save(companyUser)';
+  async create(createCompanyUserDto: CreateCompanyUserDto) {
+    const companyUser = this.companyUsersRepository.create({
+      company: { id: createCompanyUserDto.companyId },
+      user: { id: createCompanyUserDto.userId },
+      role: { id: createCompanyUserDto.roleId },
+    });
+    return this.companyUsersRepository.save(companyUser);
   }
 
   async findAll() {

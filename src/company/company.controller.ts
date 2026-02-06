@@ -8,6 +8,9 @@ import {
   Delete,
   UseGuards,
   Req,
+  NotFoundException,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { CompanyService } from './company.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
@@ -26,23 +29,45 @@ export class CompanyController {
     return this.companyService.create(user, createCompanyDto);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get()
-  findAll() {
-    return this.companyService.findAll();
+  findAll(@Req() req: any) {
+    const user: User | null = req['user'] as User;
+    return this.companyService.findAll(user);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.companyService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    try {
+      return await this.companyService.findOne(id);
+    } catch (err) {
+      throw new NotFoundException(err);
+    }
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCompanyDto: UpdateCompanyDto) {
-    return this.companyService.update(+id, updateCompanyDto);
+  async update(
+    @Req() req: any,
+    @Param('id') id: string,
+    @Body() updateCompanyDto: UpdateCompanyDto,
+  ) {
+    try {
+      const user: User | null = req['user'] as User;
+      return await this.companyService.update(id, updateCompanyDto, user);
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.companyService.remove(+id);
+  async remove(@Param('id') id: string) {
+    try {
+      return await this.companyService.remove(id);
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    }
   }
 }
