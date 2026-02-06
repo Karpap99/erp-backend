@@ -26,7 +26,9 @@ class ConfigService {
       ],
       migrationsTableName: 'migration',
       migrations: ['src/migration/*.ts'],
-      synchronize: this.env['DB_SYNCHRONIZE'] === 'true',
+      synchronize: false,
+      autoLoadEntities: true,
+      migrationsRun: true,
       logging: this.env['DB_LOGGING'] === 'true',
       ssl: false,
     };
