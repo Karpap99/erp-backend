@@ -33,7 +33,10 @@ export class Company {
   @Column('timestamp without time zone', { name: 'deleted_at', nullable: true })
   deletedAt: Date | null;
 
-  @OneToMany(() => CompanyUsers, (companyUsers) => companyUsers.company)
+  @OneToMany(() => CompanyUsers, (companyUsers) => companyUsers.company, {
+    cascade: ['insert'],
+    orphanedRowAction: 'disable',
+  })
   companyUsers: CompanyUsers[];
 
   @OneToMany(() => Product, (product) => product.company)

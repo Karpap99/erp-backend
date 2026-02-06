@@ -1,7 +1,6 @@
 export enum CompanyRoleType {
-  ADMIN = 'admin',
-  MANAGER = 'manager',
-  USER = 'user',
-  VIEWER = 'viewer',
-  CUSTOM = 'custom',
+  OWNER = 1,
+  ADMIN = 2,
+  MANAGER = 3,
+  ANALYST = 4,
 }

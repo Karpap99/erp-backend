@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { CompanyUsersService } from './company-users.service';
 import { CreateCompanyUserDto } from './dto/create-company-user.dto';
 import { UpdateCompanyUserDto } from './dto/update-company-user.dto';
@@ -19,16 +27,19 @@ export class CompanyUsersController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.companyUsersService.findOne(+id);
+    return this.companyUsersService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCompanyUserDto: UpdateCompanyUserDto) {
-    return this.companyUsersService.update(+id, updateCompanyUserDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateCompanyUserDto: UpdateCompanyUserDto,
+  ) {
+    return this.companyUsersService.update(id, updateCompanyUserDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.companyUsersService.remove(+id);
+    return this.companyUsersService.remove(id);
   }
 }
