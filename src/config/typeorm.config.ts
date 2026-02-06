@@ -13,21 +13,24 @@ class ConfigService {
 
   public getTypeOrmConfig(): TypeOrmModuleOptions {
     return {
-      type: "postgres",
-      host: this.getValue("DB_HOST"),
-      port: parseInt(this.getValue("DB_PORT")),
-      username: this.getValue("DB_USERNAME"),
-      password: this.getValue("DB_PASSWORD"),
-      database: this.getValue("DB_NAME"),
-      entities: [__dirname + "/../**/*.entity{.ts,.js}", __dirname + "/../entities/*{.ts,.js}"],
-      migrationsTableName: "migration",
-      migrations: ["src/migration/*.ts"],
-      synchronize: this.env["DB_SYNCHRONIZE"] === "true",
-      logging: this.env["DB_LOGGING"] === "true",
+      type: 'postgres',
+      host: this.getValue('DB_HOST'),
+      url: this.getValue('DB_URL', false),
+      port: parseInt(this.getValue('DB_PORT')),
+      username: this.getValue('DB_USERNAME'),
+      password: this.getValue('DB_PASSWORD'),
+      database: this.getValue('DB_NAME'),
+      entities: [
+        __dirname + '/../**/*.entity{.ts,.js}',
+        __dirname + '/../entities/*{.ts,.js}',
+      ],
+      migrationsTableName: 'migration',
+      migrations: ['src/migration/*.ts'],
+      synchronize: this.env['DB_SYNCHRONIZE'] === 'true',
+      logging: this.env['DB_LOGGING'] === 'true',
       ssl: false,
     };
   }
 }
-
 
 export const configService = new ConfigService(process.env);
